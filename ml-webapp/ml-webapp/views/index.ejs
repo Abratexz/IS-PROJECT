@@ -1,0 +1,315 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Data Cleaning App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+        .card {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            border: none;
+            border-radius: 10px;
+        }
+        .card-header {
+            border-radius: 10px 10px 0 0 !important;
+            padding: 1rem;
+        }
+        .btn-action {
+            transition: transform 0.2s;
+        }
+        .btn-action:hover {
+            transform: translateY(-3px);
+        }
+        .section-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .header-section {
+        background-color: #2c3e50;
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    
+    <div class="container py-5">
+        <!-- HEADER -->
+        <header class="text-center mb-5">
+            <div class="header-section text-center">
+            <h1 class="display-4 fw-bold">Data Cleaning App</h1>
+            <p class="lead">View, clean datasets, and make predictions</p>
+            <hr class="my-4 w-50 mx-auto">
+            </div>
+        </header>
+
+
+        <div class="row">
+            <!-- LEFT COLUMN: DATASET MANAGEMENT -->
+            <div class="col-lg-6 mb-4">
+                <!-- DATA VIEWING SECTION -->
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h3 class="h4 mb-0">View Raw Data</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-3">
+                            <a href="/data/raw-mobile-data" class="btn btn-outline-secondary btn-action">Raw Mobile Data</a>
+                            <a href="/data/raw-worker-data" class="btn btn-outline-secondary btn-action">Raw Worker Data</a>
+                            <a href="/data/raw-cnn-data" class="btn btn-outline-secondary btn-action">Raw CNN Pixel Data</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DATA CLEANING SECTION -->
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="h4 mb-0">Clean Datasets</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-3">
+                            <a href="/data/clean-mobile-data" class="btn btn-primary btn-action">Clean Mobile Dataset</a>
+                            <a href="/data/clean-worker-data" class="btn btn-success btn-action">Clean Worker Dataset</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODEL TRAINING SECTION -->
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h3 class="h4 mb-0">Train Models</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-3">
+                            <a href="/data/train-mobile-with-clean" class="btn btn-warning btn-action">Train Mobile Linear Regression</a>
+                            <a href="/data/train-mobile-dt" class="btn btn-info btn-action">Train Mobile Decision Tree</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h3 class="h4 mb-0">Train CNN Model</h3>
+                    </div>
+                    <div class="card-body">
+                        <form action="/data/train-number-model" method="POST">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-warning btn-action">Train CNN Model</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                      <h3 class="h4 mb-0">ข้อมูลการพัฒนาโมเดล</h3>
+                    </div>
+                    <div class="card-body">
+                      <ul class="list-group">
+                        <li class="list-group-item">
+                          <a href="/data/explanation-algorithm-theory">แนวทางการพัฒนาโมเดล</a>
+                        </li>
+                      </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: PREDICTION TOOLS -->
+            <div class="col-lg-6">
+                <!-- MOBILE PREDICTION -->
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="h4 mb-0">Predict Mobile Price</h3>
+                    </div>
+                    <div class="card-body">
+                        <form action="/data/predict-mobile" method="POST">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="ram" class="form-label">RAM (GB):</label>
+                                    <select class="form-select" name="RAM_GB" id="ram" required>
+                                        <option value="" disabled selected>Select</option>
+                                        <% [2, 4, 6, 8, 12, 16].forEach(ram => { %>
+                                            <option value="<%= ram %>"><%= ram %> GB</option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="storage" class="form-label">Storage (GB):</label>
+                                    <select class="form-select" name="Storage_GB" id="storage" required>
+                                        <option value="" disabled selected>Select</option>
+                                        <% [32, 64, 128, 256, 512].forEach(storage => { %>
+                                            <option value="<%= storage %>"><%= storage %> GB</option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="battery" class="form-label">Battery (mAh):</label>
+                                    <select class="form-select" name="Battery_mAh" id="battery" required>
+                                        <option value="" disabled selected>Select</option>
+                                        <% [2005, 3000, 4000, 5000, 6000].forEach(battery => { %>
+                                            <option value="<%= battery %>"><%= battery %> mAh</option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <% if (typeof mobilePrediction !== 'undefined' && mobilePrediction !== null) { %>
+                                <div class="alert alert-info mt-3">
+                                    <strong>Predicted Price:</strong> $<%= mobilePrediction %>
+                                </div>
+                            <% } %>
+                            
+                            <div class="d-grid mt-3">
+                                <button type="submit" class="btn btn-primary">Predict Price</button>
+                            </div>
+                        </form>       
+                    </div>
+                </div>
+
+                <!-- WORKER PREDICTION -->
+                <div class="card mt-4">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="h4 mb-0">Predict Worker Salary</h3>
+                    </div>
+                    <div class="card-body">
+                        <form action="/data/predict-worker" method="POST">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="experience" class="form-label">Experience:</label>
+                                    <select name="Years_of_Experience" id="experience" class="form-select" required>
+                                        <option value="" disabled selected>Years</option>
+                                        <% [1,2,3,4,5,6,7,8,9,10].forEach(exp => { %>
+                                            <option value="<%= exp %>"><%= exp %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                        
+                                <div class="col-md-4 mb-3">
+                                    <label for="performance" class="form-label">Performance:</label>
+                                    <select name="Performance_Score" id="performance" class="form-select" required>
+                                        <option value="" disabled selected>Score</option>
+                                        <% [1,2,3,4,5].forEach(score => { %>
+                                            <option value="<%= score %>"><%= score %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                        
+                                <div class="col-md-4 mb-3">
+                                    <label for="age" class="form-label">Age:</label>
+                                    <select name="Age" id="age" class="form-select" required>
+                                        <option value="" disabled selected>Years</option>
+                                        <% [20,25,30,35,40,45,50].forEach(age => { %>
+                                            <option value="<%= age %>"><%= age %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                            </div>
+                        
+                            <% if (typeof workerPrediction !== 'undefined' && workerPrediction !== null) { %>
+                                <div class="alert alert-success mt-3">
+                                    <strong>Predicted Salary:</strong> $<%= workerPrediction %>
+                                </div>
+                            <% } %>
+
+                            <div class="d-grid mt-3">
+                                <button type="submit" class="btn btn-success">Predict Salary</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card mt-4">
+                    <div class="card-header bg-warning text-white">
+                        <h3 class="h4 mb-0">Predict from Single Number</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Explanation for the User -->
+                        <p class="text-muted">
+                            🔹 Enter a **single number** between **0 and 255** to represent a pixel intensity.<br>
+                            🔹 The model will **simulate an image** by filling a **28×28 grid** with this number.<br>
+                            🔹 It will **predict the most likely digit (0-9)** that resembles this pattern.
+                        </p>
+                
+                        <!-- Info Box -->
+                        <div class="alert alert-info">
+                            <strong>ℹ️ How it works:</strong> Normally, the model expects an **image (28×28 pixels)**.  
+                            Since you're entering **one number**, we fill a fake image using **this value for all pixels**.  
+                            The model will then classify this "image" into a digit (0-9).
+                        </div>
+                
+                        <!-- Prediction Form -->
+                        <form action="/data/predict-number" method="POST">
+                            <div class="mb-3">
+                                <label for="number" class="form-label">
+                                    Enter a pixel intensity (0 - 255):
+                                </label>
+                                <input type="number" name="number" id="number" class="form-control"
+                                    min="0" max="255" required
+                                    placeholder="E.g., 128"
+                                    title="Enter a number between 0 and 255 (pixel intensity)">
+                            </div>
+                
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-warning">Predict</button>
+                            </div>
+                        </form>
+                
+                        <!-- Display Prediction Result -->
+                        <% if (typeof singleNumberPrediction !== 'undefined') { %>
+                            <div class="alert alert-warning mt-3">
+                                <strong>🔢 Predicted Class:</strong> <%= singleNumberPrediction %>
+                            </div>
+                        <% } %>
+                
+                        <!-- Example Table -->
+                        <div class="mt-4">
+                            <h5>📌 Example Predictions</h5>
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Input Number (Pixel Intensity)</th>
+                                        <th>What the Model "Sees"</th>
+                                        <th>Predicted Class (Digit)</th>
+                                        <th>Meaning</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>0</strong></td>
+                                        <td>🔲 (Completely black image)</td>
+                                        <td><strong>1</strong></td>
+                                        <td>The model sees a blank image and might classify it as **1** (a thin digit).</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>128</strong></td>
+                                        <td>🔳 (A medium gray image)</td>
+                                        <td><strong>4</strong></td>
+                                        <td>The model sees a uniform gray pattern and might classify it as **4**.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>255</strong></td>
+                                        <td>⬜ (Completely white image)</td>
+                                        <td><strong>8</strong></td>
+                                        <td>The model sees a fully white image and might classify it as **8**.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <footer class="text-center mt-5 text-muted">
+            <small>Data Cleaning App © 2025</small>
+        </footer>
+    </div>
+</body>
+</html>

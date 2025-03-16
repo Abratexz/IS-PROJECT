@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แนวทางการพัฒนาโมเดล (Model Development Approach)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: 'Sarabun', sans-serif;
+      line-height: 1.8;
+      color: #333;
+      background-color: #f8f9fa;
+    }
+    .header-section {
+      background-color: #2c3e50;
+      color: white;
+      padding: 3rem 0;
+      margin-bottom: 2rem;
+      border-radius: 0.5rem;
+    }
+    .section-card {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease;
+    }
+    .section-card:hover {
+      transform: translateY(-5px);
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+      font-weight: 600;
+    }
+    .header-section h1 {
+      color: white;
+    }
+    .algorithm-card {
+      border-left: 4px solid #3498db;
+      background-color: #f9f9f9;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+    .step-card {
+      border-left: 4px solid #2ecc71;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      background-color: #f9f9f9;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+    .step-number {
+      background-color: #2ecc71;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 1rem;
+    }
+    .footer-section {
+      background-color: #f8f9fa;
+      padding: 2rem 0;
+      border-top: 1px solid #e9ecef;
+      margin-top: 2rem;
+    }
+    .dataset-badge {
+      background-color: #e74c3c;
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.25rem;
+      margin-right: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .icon-box {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #3498db;
+    }
+    .nav-pills .nav-link.active {
+      background-color: #2c3e50;
+    }
+    .tab-content {
+      padding: 2rem;
+      background-color: white;
+      border-radius: 0 0.5rem 0.5rem 0.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="header-section text-center">
+    <div class="container">
+      <h1 class="display-4">แนวทางการพัฒนาโมเดล</h1>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section-card">
+      <div class="d-flex align-items-center mb-4">
+        <div class="icon-box me-3">
+          <i class="bi bi-clipboard-data"></i>
+        </div>
+        <h2 class="mb-0">ภาพรวมของโครงการ</h2>
+      </div>
+      
+      <p class="lead">
+        ในโครงการนี้มีการพัฒนาโมเดล 2 ประเภทหลัก ๆ คือ <span class="fw-bold text-primary">Machine Learning</span> (Linear Regression และ Decision Tree) และ <span class="fw-bold text-primary">Neural Network</span> (Feedforward Neural Network) โดยใช้ข้อมูลจากไฟล์ CSV จำนวน 3 ไฟล์ดังนี้
+      </p>
+      
+      <div class="row mt-4">
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title"><i class="bi bi-phone me-2"></i>mobile_dataset.csv</h5>
+              <p class="card-text">ข้อมูลเกี่ยวกับโทรศัพท์มือถือ (RAM, Storage, Battery, Price) สำหรับการทำนายราคา</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title"><i class="bi bi-person-workspace me-2"></i>worker_dataset.csv</h5>
+              <p class="card-text">ข้อมูลเกี่ยวกับพนักงาน (อายุ, ประสบการณ์, คะแนนประเมิน) สำหรับการทำนายเงินเดือน</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title"><i class="bi bi-image me-2"></i>cnn_dataset.csv</h5>
+              <p class="card-text">ข้อมูลภาพขนาด 28×28 พิกเซล (Flatten เป็น 784 Columns) และมี label 10 คลาส สำหรับการจำแนกประเภทด้วย Neural Network</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="alert alert-info mt-4">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        <strong>การเตรียมข้อมูล:</strong> ข้อมูลถูกทำความสะอาดด้วยวิธีการ <em>dropna</em> (ตัดแถวที่มี Missing Data) ก่อนจะนำไปฝึกโมเดล
+      </div>
+    </div>
+    
+    <!-- ทฤษฎีของอัลกอริทึมที่พัฒนา -->
+    <div class="section-card">
+      <div class="d-flex align-items-center mb-4">
+        <div class="icon-box me-3">
+          <i class="bi bi-diagram-3"></i>
+        </div>
+        <h2 class="mb-0">ทฤษฎีของอัลกอริทึมที่พัฒนา</h2>
+      </div>
+      
+      <p>อัลกอริทึมที่เราใช้ในการพัฒนาโมเดลมีพื้นฐานมาจากหลักการทางสถิติและคณิตศาสตร์ โดยรายละเอียดสรุปได้ดังนี้:</p>
+      
+      <div class="algorithm-card">
+        <h3><i class="bi bi-graph-up me-2"></i>Linear Regression (การถดถอยเชิงเส้น)</h3>
+        <p>เป็นวิธีพื้นฐานในการวิเคราะห์ความสัมพันธ์ระหว่างตัวแปร โดยใช้สมการเส้นตรงในการทำนายค่าตัวแปรเป้าหมาย เหมาะสำหรับการทำนายค่าต่อเนื่อง เช่น ราคา</p>
+        <div class="text-center my-3">
+            <svg width="600" height="200" viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+              <!-- พื้นหลัง -->
+              <rect width="600" height="200" fill="#f8f9fa" rx="5" />
+              
+              <!-- เส้นแกน x และ y -->
+              <line x1="50" y1="150" x2="550" y2="150" stroke="#333" stroke-width="2" />
+              <line x1="50" y1="30" x2="50" y2="150" stroke="#333" stroke-width="2" />
+              
+              <!-- ชื่อแกน -->
+              <text x="300" y="180" text-anchor="middle" font-size="14">ตัวแปรอิสระ (X)</text>
+              <text x="20" y="90" text-anchor="middle" font-size="14" transform="rotate(-90, 20, 90)">ตัวแปรตาม (Y)</text>
+              
+              <!-- เส้นการถดถอย -->
+              <line x1="50" y1="120" x2="550" y2="50" stroke="#3498db" stroke-width="3" />
+              
+              <!-- จุดข้อมูล -->
+              <circle cx="80" cy="110" r="5" fill="#e74c3c" />
+              <circle cx="150" cy="100" r="5" fill="#e74c3c" />
+              <circle cx="200" cy="90" r="5" fill="#e74c3c" />
+              <circle cx="250" cy="85" r="5" fill="#e74c3c" />
+              <circle cx="300" cy="80" r="5" fill="#e74c3c" />
+              <circle cx="350" cy="70" r="5" fill="#e74c3c" />
+              <circle cx="400" cy="75" r="5" fill="#e74c3c" />
+              <circle cx="450" cy="60" r="5" fill="#e74c3c" />
+              <circle cx="500" cy="55" r="5" fill="#e74c3c" />
+              
+              <!-- คำอธิบาย -->
+              <rect x="400" y="20" width="180" height="50" fill="white" stroke="#ddd" rx="5" />
+              <circle cx="420" cy="35" r="5" fill="#e74c3c" />
+              <text x="435" y="40" font-size="12">ข้อมูลที่สังเกตได้</text>
+              <line x1="410" y1="55" x2="430" y2="55" stroke="#3498db" stroke-width="3" />
+              <text x="435" y="60" font-size="12">เส้นการถดถอย</text>
+            </svg>
+          </div>
+          <div class="alert alert-secondary">
+            <strong>การประยุกต์ใช้:</strong> ในโครงการนี้ใช้ทำนาย Price ของมือถือจาก RAM, Storage, Battery เป็นต้น
+          </div>
+      </div>
+
+      <div class="algorithm-card">
+        <h3><i class="bi bi-diagram-2 me-2"></i>Decision Tree Regressor</h3>
+        <p>เป็นอัลกอริทึมต้นไม้ตัดสินใจที่ใช้สำหรับงานทำนายค่าต่อเนื่อง (Regression) โดยจะแตกต่างจาก Decision Tree สำหรับการจัดประเภท (Classification) ตรงที่โหนดใบจะให้ค่าตัวเลขเป็นคำตอบในการทำนาย</p>
+        <div class="text-center my-3">
+            <svg width="600" height="200" viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- พื้นหลัง -->
+                <rect width="600" height="200" fill="#f8f9fa" rx="5" />
+                
+                <!-- ส่วนของต้นไม้ -->
+                <!-- โหนดหลัก -->
+                <circle cx="300" cy="40" r="25" fill="#3498db" stroke="#2980b9" stroke-width="2" />
+                <text x="300" y="45" text-anchor="middle" font-size="12" fill="white">Split 1</text>
+                
+                <!-- เส้นเชื่อม -->
+                <line x1="280" y1="60" x2="200" y2="100" stroke="#333" stroke-width="2" />
+                <line x1="320" y1="60" x2="400" y2="100" stroke="#333" stroke-width="2" />
+                
+                <!-- โหนดซ้าย -->
+                <circle cx="200" cy="100" r="25" fill="#e74c3c" stroke="#c0392b" stroke-width="2" />
+                <text x="200" y="105" text-anchor="middle" font-size="12" fill="white">Split 2</text>
+                
+                <!-- โหนดขวา -->
+                <circle cx="400" cy="100" r="25" fill="#2ecc71" stroke="#27ae60" stroke-width="2" />
+                <text x="400" y="105" text-anchor="middle" font-size="12" fill="white">Split 3</text>
+                
+                <!-- เส้นเชื่อม -->
+                <line x1="180" y1="120" x2="140" y2="160" stroke="#333" stroke-width="2" />
+                <line x1="220" y1="120" x2="260" y2="160" stroke="#333" stroke-width="2" />
+                <line x1="380" y1="120" x2="340" y2="160" stroke="#333" stroke-width="2" />
+                <line x1="420" y1="120" x2="460" y2="160" stroke="#333" stroke-width="2" />
+                
+                <!-- โหนดใบ -->
+                <rect x="120" y="160" width="40" height="25" rx="5" fill="#f39c12" stroke="#d35400" stroke-width="2" />
+                <text x="140" y="177" text-anchor="middle" font-size="12" fill="white">Leaf A</text>
+                
+                <rect x="240" y="160" width="40" height="25" rx="5" fill="#9b59b6" stroke="#8e44ad" stroke-width="2" />
+                <text x="260" y="177" text-anchor="middle" font-size="12" fill="white">Leaf B</text>
+                
+                <rect x="320" y="160" width="40" height="25" rx="5" fill="#1abc9c" stroke="#16a085" stroke-width="2" />
+                <text x="340" y="177" text-anchor="middle" font-size="12" fill="white">Leaf C</text>
+                
+                <rect x="440" y="160" width="40" height="25" rx="5" fill="#34495e" stroke="#2c3e50" stroke-width="2" />
+                <text x="460" y="177" text-anchor="middle" font-size="12" fill="white">Leaf D</text>
+            </svg>
+        </div>
+        <div class="alert alert-secondary">
+          <strong>การประยุกต์ใช้:</strong> ในโครงการนี้ใช้ทำนาย Salary ของพนักงาน จากปัจจัยเช่น Age, Years_of_Experience, Performance_Score เป็นต้น
+        </div>
+      </div>
+
+      <div class="algorithm-card">
+        <h3><i class="bi bi-grid-3x3 me-2"></i>Feedforward Neural Network (FNN)</h3>
+        <p>เป็นโครงข่ายประสาทเทียมแบบ Fully Connected หรือ Multi-layer Perceptron (MLP) เหมาะสำหรับการจำแนกประเภทข้อมูลที่เป็น Vector ซึ่งในที่นี้เป็นข้อมูลภาพที่ถูก Flatten ขนาด 784 จุด (28×28 พิกเซล) โดยมี 10 คลาส</p>
+        <div class="text-center my-3">
+            <svg width="600" height="200" viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- พื้นหลัง -->
+                <rect width="600" height="200" fill="#f8f9fa" rx="5" />
+                
+                <!-- ส่วนของสถาปัตยกรรม MLP -->
+                <!-- Input Layer (784) -->
+                <rect x="50" y="40" width="80" height="120" fill="#3498db" stroke="#2980b9" stroke-width="2" rx="5" />
+                <text x="90" y="110" text-anchor="middle" font-size="12" fill="white">Input<br>784</text>
+                
+                <!-- Hidden Layer 1 (128) -->
+                <rect x="200" y="50" width="80" height="100" fill="#e74c3c" stroke="#c0392b" stroke-width="2" rx="5" />
+                <text x="240" y="105" text-anchor="middle" font-size="12" fill="white">128</text>
+                
+                <!-- Hidden Layer 2 (64) -->
+                <rect x="350" y="60" width="80" height="80" fill="#9b59b6" stroke="#8e44ad" stroke-width="2" rx="5" />
+                <text x="390" y="105" text-anchor="middle" font-size="12" fill="white">64</text>
+                
+                <!-- Output Layer (10) -->
+                <rect x="500" y="70" width="50" height="60" fill="#2ecc71" stroke="#27ae60" stroke-width="2" rx="5" />
+                <text x="525" y="105" text-anchor="middle" font-size="12" fill="white">10</text>
+                
+                <!-- เส้นเชื่อม -->
+                <line x1="130" y1="100" x2="200" y2="100" stroke="#333" stroke-width="2" />
+                <line x1="280" y1="100" x2="350" y2="100" stroke="#333" stroke-width="2" />
+                <line x1="430" y1="100" x2="500" y2="100" stroke="#333" stroke-width="2" />
+                
+                <!-- ลูกศร -->
+                <polygon points="193,97 200,93 200,107" fill="#333" />
+                <polygon points="273,97 280,93 280,107" fill="#333" />
+                <polygon points="493,97 500,93 500,107" fill="#333" />
+            </svg>
+        </div>
+        <div class="alert alert-secondary">
+          <strong>การประยุกต์ใช้:</strong> ในโครงการนี้ใช้จำแนกประเภทภาพ (10 คลาส) โดยข้อมูลอยู่ในรูป Flatten 784 มิติ (28×28) และ Label
+        </div>
+      </div>
+    </div>
+    
+    <!-- ขั้นตอนการพัฒนาโมเดล -->
+    <div class="section-card">
+      <div class="d-flex align-items-center mb-4">
+        <div class="icon-box me-3">
+          <i class="bi bi-list-ol"></i>
+        </div>
+        <h2 class="mb-0">ขั้นตอนการพัฒนาโมเดล</h2>
+      </div>
+      
+      <ul class="nav nav-pills mb-4" id="modelTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" type="button" role="tab">ภาพรวม</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="ml-tab" data-bs-toggle="pill" data-bs-target="#ml" type="button" role="tab">Machine Learning</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="nn-tab" data-bs-toggle="pill" data-bs-target="#nn" type="button" role="tab">Neural Network</button>
+        </li>
+      </ul>
+      
+      <div class="tab-content" id="modelTabsContent">
+        <!-- ภาพรวมทั้งหมด -->
+        <div class="tab-pane fade show active" id="all" role="tabpanel">
+          <div class="d-flex step-card">
+            <div class="step-number">1</div>
+            <div>
+              <h4>การรวบรวมและเตรียมข้อมูล</h4>
+              <p>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> รวบรวมข้อมูลจาก 3 ไฟล์ CSV ได้แก่ mobile_dataset.csv, worker_dataset.csv, และ cnn_dataset.csv<br>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> ทำการลบแถวที่มีข้อมูลขาดหาย (Missing Data) เพื่อให้ข้อมูลมีความสมบูรณ์<br>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> ปรับรูปแบบ/สเกลข้อมูลตามความเหมาะสม (เช่น Normalize พิกเซลสำหรับภาพ)
+              </p>
+            </div>
+          </div>
+          
+          <div class="d-flex step-card">
+            <div class="step-number">2</div>
+            <div>
+              <h4>การแบ่งข้อมูลและการสร้างฟีเจอร์</h4>
+              <p>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> สำหรับ mobile_dataset และ worker_dataset: แบ่งเทรน/เทสต์ เป็น 80:20<br>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> เลือกฟีเจอร์ที่สำคัญ (RAM, Storage, Battery, Age, Experience, Performance ฯลฯ) และกำหนด Target (Price, Salary)<br>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> สำหรับ cnn_dataset: เป็นข้อมูล Flatten 784 Features + Label, ทำการ Normalize และนำไปใช้เทรน FNN
+              </p>
+            </div>
+          </div>
+          
+          <div class="d-flex step-card">
+            <div class="step-number">3</div>
+            <div>
+              <h4>การเลือกและฝึกสอนโมเดล</h4>
+              <p>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> ฝึก Linear Regression และ Decision Tree Regressor สำหรับข้อมูลมือถือและข้อมูลพนักงาน<br>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> ฝึก Feedforward Neural Network (SimpleNN) สำหรับการจำแนกภาพ 10 คลาส<br>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> ในที่นี้ใช้ Optimizer (Adam/SGD) และ Loss Function ที่ต่างกันตามงาน เช่น CrossEntropy สำหรับ Classification
+              </p>
+            </div>
+          </div>
+          
+          <div class="d-flex step-card">
+            <div class="step-number">4</div>
+            <div>
+              <h4>การประเมินผลและการปรับปรุงโมเดล</h4>
+              <p>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> ประเมินโมเดล Regression ด้วย MSE, RMSE, R² ฯลฯ และโมเดล Classification ด้วย Accuracy, Precision, Recall ฯลฯ<br>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> วิเคราะห์จุดอ่อน/จุดแข็ง และลองปรับพารามิเตอร์ (Hyperparameter Tuning) เช่น Depth ของต้นไม้, Learning Rate ใน Neural Network<br>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> หากจำเป็นอาจใช้เทคนิค Regularization หรือ Early Stopping เพื่อป้องกัน Overfitting
+              </p>
+            </div>
+          </div>
+          
+          <div class="d-flex step-card">
+            <div class="step-number">5</div>
+            <div>
+              <h4>การนำโมเดลไปใช้งานและการติดตามผล</h4>
+              <p>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> นำโมเดลที่ผ่านการฝึกสอนและประเมินแล้วไปใช้งานจริง (predict, inference)<br>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> ติดตามผลลัพธ์และปรับปรุงโมเดลในสภาพแวดล้อมการใช้งานจริง<br>
+                <i class="bi bi-check-circle-fill text-success me-2"></i> จัดเก็บโมเดลในรูปไฟล์ (เช่น .pkl, .pth) เพื่อสามารถเรียกใช้ซ้ำได้
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Machine Learning -->
+        <div class="tab-pane fade" id="ml" role="tabpanel">
+          <div class="mb-4">
+            <h4><i class="bi bi-graph-up me-2"></i>การพัฒนาโมเดล Linear Regression</h4>
+            <p>สำหรับการทำนายค่าต่อเนื่อง เช่น ราคาโทรศัพท์มือถือ (Price) จาก RAM, Storage, Battery:</p>
+            
+            <div class="card mb-3">
+              <div class="card-header bg-light">
+                <strong>ขั้นตอนการพัฒนา:</strong>
+              </div>
+              <div class="card-body">
+                <ol>
+                  <li>คัดเลือกฟีเจอร์ที่ต้องการ เช่น <em>RAM_GB, Storage_GB, Battery_mAh</em></li>
+                  <li>แบ่งข้อมูลเป็น Training Set และ Test Set (80:20)</li>
+                  <li>ฝึกโมเดล <strong>LinearRegression</strong> ด้วยชุดข้อมูลเทรน</li>
+                  <li>ทดสอบโมเดลกับชุดข้อมูลทดสอบและวัดประสิทธิภาพด้วย <em>MSE, MAE, R²</em></li>
+                  <li>บันทึกโมเดลด้วย <em>joblib</em> เพื่อนำไปใช้งานต่อ</li>
+                </ol>
+              </div>
+            </div>
+            
+            <div class="alert alert-info">
+              <strong>หมายเหตุ:</strong> ใช้ <code>trainLinearRegression.py</code> ในการฝึกโมเดล โดยอ่านข้อมูล (JSON หรือ CSV) แปลงลง DataFrame และรัน <em>model.fit(X_train, y_train)</em>
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <h4><i class="bi bi-diagram-2 me-2"></i>การพัฒนาโมเดล Decision Tree Regressor</h4>
+            <p>สำหรับการทำนายค่าต่อเนื่อง (Regression) เช่น เงินเดือนพนักงาน (Salary):</p>
+            
+            <div class="card mb-3">
+              <div class="card-header bg-light">
+                <strong>ขั้นตอนการพัฒนา:</strong>
+              </div>
+              <div class="card-body">
+                <ol>
+                  <li>แปลงข้อมูลตัวอักษรเป็นตัวเลข ถ้ามี (Label Encoding/One-Hot) และกำหนดฟีเจอร์ เช่น <em>Age, Years_of_Experience, Performance_Score</em></li>
+                  <li>แบ่งข้อมูลเป็น Training Set และ Test Set (80:20)</li>
+                  <li>สร้างโมเดล <strong>DecisionTreeRegressor</strong> และฝึกสอนด้วยชุดข้อมูลเทรน</li>
+                  <li>ประเมินโมเดลด้วย <em>MSE, MAE, R²</em> กับชุดข้อมูลทดสอบ</li>
+                  <li>บันทึกโมเดลด้วย <em>joblib</em> เพื่อใช้งานต่อ</li>
+                </ol>
+              </div>
+            </div>
+            
+            <div class="alert alert-info">
+              <strong>หมายเหตุ:</strong> ใช้ <code>trainDecisionTree.py</code> ในการฝึกโมเดล โดยดูคอลัมน์ฟีเจอร์และ Target ที่กำหนดไว้ (เช่น “Salary”)
+            </div>
+          </div>
+        </div>
+        
+        <!-- Neural Network -->
+        <div class="tab-pane fade" id="nn" role="tabpanel">
+          <div class="mb-4">
+            <h4><i class="bi bi-layers me-2"></i>การพัฒนาโมเดล Feedforward Neural Network (SimpleNN)</h4>
+            <p>สำหรับการจำแนกประเภทข้อมูลภาพ (784 Features ต่อภาพ) เป็น 10 คลาสจากไฟล์ <strong>cnn_dataset.csv</strong>:</p>
+            
+            <div class="card mb-3">
+              <div class="card-header bg-light">
+                <strong>สถาปัตยกรรมของโมเดล (SimpleNN):</strong>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead class="table-light">
+                      <tr>
+                        <th>ชั้น (Layer)</th>
+                        <th>ขนาด/รายละเอียด</th>
+                        <th>Activation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Input Layer</td>
+                        <td>784 Neurons (Flatten 28×28)</td>
+                        <td>ไม่มี (Input)</td>
+                      </tr>
+                      <tr>
+                        <td>Hidden Layer 1</td>
+                        <td>128 Neurons</td>
+                        <td>ReLU</td>
+                      </tr>
+                      <tr>
+                        <td>Hidden Layer 2</td>
+                        <td>64 Neurons</td>
+                        <td>ReLU</td>
+                      </tr>
+                      <tr>
+                        <td>Output Layer</td>
+                        <td>10 Neurons</td>
+                        <td>Softmax (ผ่าน CrossEntropyLoss)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card mb-3">
+              <div class="card-header bg-light">
+                <strong>ขั้นตอนการพัฒนา:</strong>
+              </div>
+              <div class="card-body">
+                <ol>
+                  <li>อ่านข้อมูลจาก <em>cnn_dataset.csv</em> โดย X คือ 784 columns แรก, y คือคอลัมน์สุดท้าย (label)</li>
+                  <li>Normalize pixel values (0-255) ให้เป็นช่วง [0,1]</li>
+                  <li>แปลงข้อมูลเป็น Tensor (float32 สำหรับ X, long สำหรับ y)</li>
+                  <li>สร้างโมเดล SimpleNN และกำหนด <em>CrossEntropyLoss</em> กับ <em>Adam Optimizer (lr=0.001)</em></li>
+                  <li>ฝึกสอนโมเดลด้วยจำนวน Epoch เท่าที่ต้องการ (เช่น 10) โดยไม่ได้แบ่ง Train/Test ในโค้ดตัวอย่าง</li>
+                  <li>บันทึกโมเดลเป็นไฟล์ .pth เพื่อใช้งานต่อ</li>
+                </ol>
+              </div>
+            </div>
+            
+            <div class="alert alert-warning">
+              <i class="bi bi-lightbulb-fill me-2"></i>
+              <strong>หมายเหตุ:</strong> หากต้องการประเมินความแม่นยำของโมเดล ควรแบ่ง Train/Test หรือ Validation เพิ่มเติม แม้ในโค้ดตัวอย่างจะเทรนกับข้อมูลทั้งหมด
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- การประเมินผลโมเดล -->
+    <div class="section-card">
+      <div class="d-flex align-items-center mb-4">
+        <div class="icon-box me-3">
+          <i class="bi bi-bar-chart-line"></i>
+        </div>
+        <h2 class="mb-0">การประเมินผลโมเดล</h2>
+      </div>
+      
+      <p>การประเมินผลโมเดลแต่ละประเภทจะใช้เมทริกซ์ที่แตกต่างกันตามลักษณะของปัญหา:</p>
+      
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>การประเมินโมเดลทำนาย (Regression Models)</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <strong>Mean Squared Error (MSE):</strong> ค่าเฉลี่ยของกำลังสองของความต่าง (ยิ่งน้อยยิ่งดี)
+                </li>
+                <li class="list-group-item">
+                  <strong>Root Mean Squared Error (RMSE):</strong> รากที่สองของ MSE ซึ่งเป็นหน่วยเดียวกับตัวแปรเป้าหมาย
+                </li>
+                <li class="list-group-item">
+                  <strong>Mean Absolute Error (MAE):</strong> ค่าเฉลี่ยของค่าสัมบูรณ์ความต่าง (ยิ่งน้อยยิ่งดี)
+                </li>
+                <li class="list-group-item">
+                  <strong>R-squared (R²):</strong> สัดส่วนของความแปรปรวนที่โมเดลอธิบายได้ (ใกล้ 1 ยิ่งดี)
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+          <div class="card h-100">
+            <div class="card-header bg-success text-white">
+              <h5 class="mb-0"><i class="bi bi-diagram-2 me-2"></i>การประเมินโมเดลจำแนกประเภท (Classification Models)</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <strong>Accuracy:</strong> สัดส่วนของการทำนายถูกต้องเทียบกับตัวอย่างทั้งหมด
+                </li>
+                <li class="list-group-item">
+                  <strong>Precision:</strong> สัดส่วนของผลบวกที่ทำนายถูกต้อง เทียบกับผลบวกที่ทำนายทั้งหมด
+                </li>
+                <li class="list-group-item">
+                  <strong>Recall (Sensitivity):</strong> สัดส่วนของผลบวกจริงที่ถูกทำนายถูก เทียบกับผลบวกจริงทั้งหมด
+                </li>
+                <li class="list-group-item">
+                  <strong>F1-score:</strong> ค่าเฉลี่ยฮาร์โมนิกของ Precision และ Recall
+                </li>
+                <li class="list-group-item">
+                  <strong>Confusion Matrix:</strong> ตารางแสดงความสัมพันธ์ระหว่างคลาสที่ทำนายกับคลาสจริง
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="alert alert-success mt-3">
+        <i class="bi bi-lightbulb-fill me-2"></i>
+        <strong>แนวปฏิบัติที่ดี:</strong> ควรใช้การตรวจสอบแบบไขว้ (Cross-validation) หรือมี Validation Set เพิ่มเติม เพื่อให้ได้ผลประเมินที่เชื่อถือได้มากยิ่งขึ้น
+      </div>
+    </div>
+    
+    <!-- อ้างอิงและแหล่งข้อมูลเพิ่มเติม -->
+    <div class="section-card">
+      <div class="d-flex align-items-center mb-4">
+        <div class="icon-box me-3">
+          <i class="bi bi-journal-text"></i>
+        </div>
+        <h2 class="mb-0">อ้างอิงและแหล่งข้อมูลเพิ่มเติม</h2>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="card h-100">
+            <div class="card-header bg-light">
+              <h5 class="mb-0">หนังสือและบทความอ้างอิง</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <strong>Géron, A.</strong> (2022). <em>Hands-on Machine Learning with Scikit-Learn, Keras, and TensorFlow</em>. O'Reilly Media.
+                </li>
+                <li class="list-group-item">
+                  <strong>Chollet, F.</strong> (2021). <em>Deep Learning with Python</em>. Manning Publications.
+                </li>
+                <li class="list-group-item">
+                  <strong>Goodfellow, I., Bengio, Y., & Courville, A.</strong> (2016). <em>Deep Learning</em>. MIT Press.
+                </li>
+                <li class="list-group-item">
+                  <strong>James, G., Witten, D., Hastie, T., & Tibshirani, R.</strong> (2021). <em>An Introduction to Statistical Learning</em>. Springer.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+          <div class="card h-100">
+            <div class="card-header bg-light">
+              <h5 class="mb-0">แหล่งข้อมูลออนไลน์</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <strong>Scikit-learn Documentation:</strong> <a href="https://scikit-learn.org/stable/documentation.html" target="_blank">https://scikit-learn.org/stable/documentation.html</a>
+                </li>
+                <li class="list-group-item">
+                  <strong>TensorFlow Documentation:</strong> <a href="https://www.tensorflow.org/guide" target="_blank">https://www.tensorflow.org/guide</a>
+                </li>
+                <li class="list-group-item">
+                  <strong>Keras Documentation:</strong> <a href="https://keras.io/documentation/" target="_blank">https://keras.io/documentation/</a>
+                </li>
+                <li class="list-group-item">
+                  <strong>PyTorch Documentation:</strong> <a href="https://pytorch.org/docs/stable/index.html" target="_blank">https://pytorch.org/docs/stable/index.html</a>
+                </li>
+                <li class="list-group-item">
+                  <strong>Kaggle Courses:</strong> <a href="https://www.kaggle.com/learn" target="_blank">https://www.kaggle.com/learn</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer-section">
+    <div class="container">
+      <p class="text-center mb-0">© 2025 แนวทางการพัฒนาโมเดล - สงวนลิขสิทธิ์</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
